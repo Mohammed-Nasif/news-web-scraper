@@ -1,4 +1,4 @@
-module news-web-scrapper
+module news-web-scraper
 
 go 1.23.3
 
