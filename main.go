@@ -10,6 +10,9 @@ import (
 func main() {
 	db.ConnectDB()
 
+	log.Println("Starting initial scraping...")
+	routes.ScrapeArticlesAndInsetToDB()
+
 	go func() {
 		ticker := time.NewTicker(5 * time.Minute)
 		defer ticker.Stop()
