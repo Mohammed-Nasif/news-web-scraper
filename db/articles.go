@@ -25,19 +25,25 @@ func GetAllArticles() ([]models.Article, error) {
 	return articles, nil
 }
 
-func InsertArticle(title, link string, timestamp time.Time) error {
+func InsertArticle(title string, link string, timestamp time.Time) error {
 	insertQuery := `
 	INSERT INTO articles (title, link, timestamp) 
 	VALUES ($1, $2, $3)
+	ON CONFLICT (link) DO NOTHING
 	`
 
-	_, err := DB.Exec(insertQuery, title, link, timestamp)
-
+	result, err := DB.Exec(insertQuery, title, link, timestamp)
 	if err != nil {
-		log.Println("Error inserting article data: ", err)
+		log.Println("Error inserting article:", err)
 		return err
 	}
 
-	log.Println("Article data inserted successfully!")
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		log.Println("Skipped duplicate article:", title)
+	} else {
+		log.Println("Article inserted:", title)
+	}
+
 	return nil
 }

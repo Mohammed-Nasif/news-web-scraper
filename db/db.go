@@ -14,7 +14,7 @@ func ConnectDB() {
 	DB, err = sql.Open("postgres", "host=localhost port=5432 user=nasif password=admin1234 dbname=newsdb sslmode=disable")
 
 	if err != nil {
-		log.Fatal("Error opening the database: ", err)
+		log.Fatal("Error connecting to database: ", err)
 	}
 
 	if err := DB.Ping(); err != nil {
@@ -31,12 +31,12 @@ func ConnectDB() {
 
 func createArticlesTable() {
 	createTableQuery := `
-	CREATE TABLE IF NOT EXISTS articles (
-		id SERIAL PRIMARY KEY,
-		title VARCHAR(255),
-		link TEXT,
-		timestamp TIMESTAMP
-	)`
+		CREATE TABLE IF NOT EXISTS articles (
+			id SERIAL PRIMARY KEY,
+			title VARCHAR(255),
+			link TEXT UNIQUE,
+			timestamp TIMESTAMP
+		)`
 
 	_, err := DB.Exec(createTableQuery)
 
@@ -44,5 +44,5 @@ func createArticlesTable() {
 		log.Fatal(`Error creating "articles" table: `, err)
 	}
 
-	log.Println("Articles table ensured.")
+	log.Println("Ensured the articles table exists (created if necessary).")
 }

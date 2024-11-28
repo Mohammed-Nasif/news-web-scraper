@@ -10,10 +10,9 @@ import (
 
 func ScrapeArticles() ([]models.Article, error) {
 	var articles []models.Article
-	urls := []string{"https://techcrunch.com/", "https://arstechnica.com/"} // Replace with real URLs
+	urls := []string{"https://techcrunch.com/", "https://arstechnica.com/"}
 
 	for _, url := range urls {
-		// Select the appropriate scraping function based on the URL
 		var scrapeFunc func(*goquery.Document) []models.Article
 		switch {
 		case strings.Contains(url, "techcrunch"):
