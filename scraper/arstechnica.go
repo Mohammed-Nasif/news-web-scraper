@@ -1,6 +1,7 @@
 package scraper
 
 import (
+	"log"
 	"news-web-scraper/models"
 	"time"
 
@@ -13,7 +14,13 @@ func scrapeArsTechnica(doc *goquery.Document) []models.Article {
 	doc.Find("article").Each(func(i int, s *goquery.Selection) {
 		title := s.Find("a").Text()
 		link, _ := s.Find("a").Attr("href")
-		timestamp := time.Now()
+		timestampStr, _ := s.Find("time").Attr("datetime")
+		timestamp, _ := time.Parse(time.RFC3339, timestampStr)
+
+		if title == "" || link == "" {
+			log.Println("Skipping article due to missing title or link")
+			return
+		}
 
 		articles = append(articles, models.Article{
 			Title:     title,
