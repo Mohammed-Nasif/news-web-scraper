@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"time"
 	"web-scraper/db"
 	"web-scraper/routes"
@@ -19,10 +20,10 @@ func main() {
 		defer ticker.Stop()
 
 		for range ticker.C {
-			log.Println("Starting Rescraping...")
+			log.Println("Starting rescraping...")
 			err := services.ScrapeArticlesAndInsertToDB()
 			if err != nil {
-				log.Println("Error during Rescraping:", err)
+				log.Println("Error during rescraping:", err)
 			} else {
 				log.Println("Rescraping completed successfully.")
 			}
@@ -30,8 +31,10 @@ func main() {
 	}()
 
 	server := routes.SetupRouter()
-	log.Println("Server running on http://localhost:8080")
-	if err := server.Run(":8080"); err != nil {
-		log.Fatalf("Error starting server: ", err)
+	port := os.Getenv("PORT")
+	baseURL := os.Getenv("BASE_URL")
+	log.Printf("Server running on %s:%s", baseURL, port)
+	if err := server.Run(":" + port); err != nil {
+		log.Fatalf("Error starting server: %v", err)
 	}
 }

@@ -2,7 +2,9 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+	"os"
 
 	_ "github.com/lib/pq"
 )
@@ -10,26 +12,34 @@ import (
 var DB *sql.DB
 
 func ConnectDB() {
-	var err error
-	DB, err = sql.Open("postgres", "host=localhost port=5432 user=nasif password=admin1234 dbname=newsdb sslmode=disable")
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	dbname := os.Getenv("DB_NAME")
+	sslmode := os.Getenv("DB_SSLMODE")
 
+	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		host, port, user, password, dbname, sslmode)
+
+	var err error
+	DB, err = sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatal("Error connecting to database: ", err)
+		log.Fatalf("Error connecting to the database: %v", err)
 	}
 
-	if err := DB.Ping(); err != nil {
-		log.Fatal("Error pinging the database: ", err)
+	err = createArticlesTable()
+	if err != nil {
+		log.Fatalf("Error creating articles table: %v", err)
 	}
 
 	log.Println("Connected to the database.")
 
 	DB.SetMaxOpenConns(10)
 	DB.SetMaxIdleConns(5)
-
-	createArticlesTable()
 }
 
-func createArticlesTable() {
+func createArticlesTable() error {
 	createTableQuery := `
 		CREATE TABLE IF NOT EXISTS articles (
 			id SERIAL PRIMARY KEY,
@@ -39,10 +49,5 @@ func createArticlesTable() {
 		)`
 
 	_, err := DB.Exec(createTableQuery)
-
-	if err != nil {
-		log.Fatal(`Error creating "articles" table: `, err)
-	}
-
-	log.Println("Ensured the articles table exists (created if necessary).")
+	return err
 }
