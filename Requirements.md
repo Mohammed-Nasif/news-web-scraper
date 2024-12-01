@@ -55,9 +55,9 @@ provided) **, e.g., /articles?page=2.
 ## Submission Checklist
 - [x] **Web Scraper**: Scrapes data from at least two pages and handles errors gracefully.
 - [x] **REST API**: Responds with JSON-formatted article data at '/articles.
-- [ ] **Concurrency**: Uses goroutines to scrape multiple pages concurrently.
-- [ ] **Optional Enhancements**: Implements middleware, data refresher
-- [ ] **Bonus** (Bonus): rate-limiting, and other optional features as listed above.
+- [X] **Concurrency**: Uses goroutines to scrape multiple pages concurrently.
+- [X] **Optional Enhancements**: Implements middleware, data refresher
+- [X] **Bonus** (Bonus): rate-limiting, and other optional features as listed above.
 ## Final Notes
 - **Testing**: Test each part thoroughly before moving on to the next section. Use 'curl' or Postman for testing API responses.
 - **Error Handling**: Ensure that errors are logged clearly and the scraper continues to run even if one URL fails.
