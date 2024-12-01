@@ -4,17 +4,19 @@ import (
 	"log"
 	"net/http"
 	"news-web-scraper/db"
+	"news-web-scraper/middlewares"
 	"news-web-scraper/scraper"
 
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter() *gin.Engine {
-	server := gin.Default()
+	router := gin.Default()
 
-	server.GET("/articles", fetchArticles)
+	router.Use(middlewares.RateLimiter())
+	router.GET("/articles", fetchArticles)
 
-	return server
+	return router
 }
 
 func fetchArticles(context *gin.Context) {
