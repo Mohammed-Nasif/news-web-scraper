@@ -2,9 +2,9 @@ package scraper
 
 import (
 	"log"
-	"news-web-scraper/models"
 	"strings"
 	"sync"
+	"web-scraper/models"
 
 	"github.com/PuerkitoBio/goquery"
 )

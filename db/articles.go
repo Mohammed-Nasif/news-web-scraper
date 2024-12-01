@@ -1,12 +1,11 @@
 package db
 
 import (
-	"log"
-	"news-web-scraper/models"
 	"time"
+	"web-scraper/models"
 )
 
-func GetAllArticles() ([]models.Article, error) {
+func SelectArticlesFromDB() ([]models.Article, error) {
 	rows, err := DB.Query("SELECT id, title, link, timestamp FROM articles")
 	if err != nil {
 		return nil, err
@@ -25,25 +24,22 @@ func GetAllArticles() ([]models.Article, error) {
 	return articles, nil
 }
 
-func InsertArticle(title string, link string, timestamp time.Time) error {
+func InsertArticleToDB(title string, link string, timestamp time.Time) (int64, error) {
 	insertQuery := `
-	INSERT INTO articles (title, link, timestamp) 
-	VALUES ($1, $2, $3)
-	ON CONFLICT (link) DO NOTHING
-	`
+    INSERT INTO articles (title, link, timestamp) 
+    VALUES ($1, $2, $3)
+    ON CONFLICT (link) DO NOTHING
+    `
 
 	result, err := DB.Exec(insertQuery, title, link, timestamp)
 	if err != nil {
-		log.Println("Error inserting article:", err)
-		return err
+		return 0, err
 	}
 
-	rowsAffected, _ := result.RowsAffected()
-	if rowsAffected == 0 {
-		log.Println("Skipped duplicate article:", title)
-	} else {
-		log.Println("Article inserted:", title)
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
 	}
 
-	return nil
+	return rowsAffected, nil
 }

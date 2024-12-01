@@ -2,16 +2,17 @@ package main
 
 import (
 	"log"
-	"news-web-scraper/db"
-	"news-web-scraper/routes"
 	"time"
+	"web-scraper/db"
+	"web-scraper/routes"
+	"web-scraper/services"
 )
 
 func main() {
 	db.ConnectDB()
 
 	log.Println("Starting initial scraping...")
-	routes.ScrapeArticlesAndInsetToDB()
+	services.ScrapeArticlesAndInsertToDB()
 
 	go func() {
 		ticker := time.NewTicker(5 * time.Minute)
@@ -19,7 +20,7 @@ func main() {
 
 		for range ticker.C {
 			log.Println("Starting Rescraping...")
-			err := routes.ScrapeArticlesAndInsetToDB()
+			err := services.ScrapeArticlesAndInsertToDB()
 			if err != nil {
 				log.Println("Error during Rescraping:", err)
 			} else {
