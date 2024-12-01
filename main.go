@@ -7,9 +7,17 @@ import (
 	"web-scraper/db"
 	"web-scraper/routes"
 	"web-scraper/services"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
+
 	db.ConnectDB()
 
 	log.Println("Starting initial scraping...")
